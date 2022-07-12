@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.9"
 services:
   nginx:
     image: nginx
@@ -7,6 +7,15 @@ services:
       - "443:443"
     volumes:
       - ./srv/nginx:/etc/nginx/conf.d
+      - ./srv/certbot/conf:/etc/letsencrypt
+      - ./srv/certbot/www:/var/www/certbot
+  certbot:
+    image: certbot/certbot:arm32v6-latest
+    volumes:
+      - ./srv/certbot/conf:/etc/letsencrypt
+      - ./srv/certbot/www:/var/www/certbot
+      - ./srv/certbot/log:/var/log/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   ldap:
     image: osixia/openldap:1.5.0
     volumes:
@@ -18,7 +27,6 @@ services:
         - "LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD}"
         - "LDAP_CONFIG_PASSWORD=${LDAP_CONFIG_PASSWORD}"
     restart: always
-
   ldapadmin:
     image: osixia/phpldapadmin:0.9.0
     environment:

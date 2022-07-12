@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./srv/nginx-letsencrypt:/etc/nginx/conf.d
+      - ./srv/certbot/conf:/etc/letsencrypt
+      - ./srv/certbot/www:/var/www/certbot
