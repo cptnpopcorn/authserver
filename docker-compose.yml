@@ -31,4 +31,9 @@ services:
 volumes:
   ldapdb:
   ldapconfig:
+  backup:
+    driver: local
+    driver_opts:
+      type: ext4
+      device: /dev/disk/by-label/backup
 
